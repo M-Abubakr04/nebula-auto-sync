@@ -1,0 +1,26 @@
+name: Sync to Bitbucket
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.BB_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan bitbucket.org >> ~/.ssh/known_hosts
+
+      - name: Push to Bitbucket
+        run: |
+          git remote add bitbucket git@bitbucket.org:m-abubakr-workspace/nebula-auto-sync.git
+          git push bitbucket main

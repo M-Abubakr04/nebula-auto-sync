@@ -1,0 +1,17 @@
+image: atlassian/default-image:3
+
+pipelines:
+  default:
+    - step:
+        name: Sync Bitbucket → GitHub (PAT)
+        script:
+          - apt-get update && apt-get install -y git
+
+          - git config --global user.name "Bitbucket-Pipeline"
+          - git config --global user.email "pipeline@nebula.local"
+
+          # Convert GitHub remote to HTTPS with token
+          - git remote remove github || true
+          - git remote add github https://$GITHUB_TOKEN@github.com/M-Abubakr04/nebula-auto-sync.git
+
+          - git push github main
