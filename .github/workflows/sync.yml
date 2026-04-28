@@ -1,0 +1,22 @@
+name: Sync to Bitbucket
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test SSH Connection (Debug)
+        run: ssh -T git@bitbucket.org || true
+
+      - name: Push to Bitbucket using App Password
+        run: |
+          git remote add bitbucket https://${{ secrets.BB_USERNAME }}:${{ secrets.BB_APP_PASSWORD }}@bitbucket.org/m-abubakr-workspace/nebula-auto-sync.git
+          git push bitbucket main
